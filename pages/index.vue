@@ -1,5 +1,5 @@
 <template>
-  <div class="main" :class="theme" v-touch="swipeHandler">
+  <div class="main" :class="theme">
     <div class="main-header">
       <button @click="onChangeTheme()" class="main-header__theme">
         <i class="fa-solid fa-moon"></i>
@@ -11,19 +11,38 @@
         <button @click="onChangeSetting()" class="settings">
           <i class="fa-solid fa-gear"></i>
         </button>
+        <div
+          v-if="showSettings"
+          @click="onChangeSetting()"
+          class="settings__overlay"
+        ></div>
         <transition
           name="transition-show-menu-setting"
-          enter-active-class="animate__animated animate__flipInX"
-          leave-active-class="animate__animated animate__flipOutX"
+          enter-active-class="animate__animated animate__fadeInDown"
+          leave-active-class="animate__animated animate__fadeOutUp"
         >
           <div v-if="showSettings" class="settings__menu">
             <div class="settings__options">
               <label for="#">Шрифты</label>
-              <span>Gabriela ></span>
+              <multiselect
+                v-model="currentFonts"
+                :options="fonts"
+                :searchable="false"
+                :show-labels="false"
+                :preselectFirst="true"
+                :allowEmpty="false"
+              ></multiselect>
             </div>
             <div class="settings__options">
               <label for="#">Категория</label>
-              <span>Все ></span>
+              <multiselect
+                v-model="currentCategory"
+                :options="category"
+                :searchable="false"
+                :show-labels="false"
+                :preselectFirst="true"
+                :allowEmpty="false"
+              ></multiselect>
             </div>
             <div class="settings__authors">
               <p>Сreared by <a href="#">Andrew Startcev</a></p>
@@ -84,6 +103,16 @@ export default {
     return {
       theme: '',
       showSettings: false,
+      fonts: [
+        'Gabriela',
+        'Monotype Corsiva',
+        'Forum',
+        'Podkova',
+        'Cormorant Infant',
+      ],
+      currentFonts: [],
+      category: ['Все', 'Вдохновляющие', 'Бизнес', 'Спортивные', 'Научные'],
+      currentCategory: [],
     }
   },
   methods: {
@@ -103,11 +132,6 @@ export default {
         this.showSettings = true
       }
     },
-    swipeHandler() {
-      if (this.showSettings) {
-        this.showSettings = false
-      }
-    },
   },
   mounted() {
     if (localStorage.getItem('theme')) {
@@ -117,7 +141,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .main {
   padding: 15px 15px 20px;
   min-height: 100vh;
@@ -138,6 +162,34 @@ export default {
       &__theme,
       &__settings {
         color: #ffffff;
+      }
+    }
+    .settings {
+      &__menu {
+        color: #ffffff;
+        background: #202565;
+      }
+      &__author {
+        color: #dddddd;
+      }
+      &__options {
+        color: #e7e6e6;
+      }
+    }
+    .multiselect {
+      &__single {
+        color: #dddddd;
+      }
+      &__option {
+        color: #dddddd;
+      }
+      .multiselect__option--selected.multiselect__option--highlight,
+      .multiselect__option--highlight {
+        background: #161a48;
+        color: #e7e6e6;
+      }
+      &__content-wrapper {
+        background: #202565;
       }
     }
   }
@@ -161,8 +213,8 @@ export default {
   }
   &__name {
     margin: 0 10px;
-    font-weight: 400;
-    font-size: 16px;
+    font-weight: 500;
+    font-size: 18px;
     line-height: 20px;
     text-align: center;
     letter-spacing: 0.001em;
@@ -180,6 +232,9 @@ export default {
   margin: 0 auto;
   &__images {
     margin: 0 8px 30px;
+    img {
+      max-width: 100%;
+    }
   }
   &__quete {
     margin: 0 20px;
@@ -227,6 +282,14 @@ export default {
   }
 }
 .settings {
+  &__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent;
+  }
   &__menu {
     position: absolute;
     right: 0;
@@ -236,6 +299,7 @@ export default {
     background: #ffffff;
     box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.25);
     border-radius: 10px;
+    z-index: 10;
   }
 
   &__options {
@@ -245,10 +309,10 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 18px;
-    color: initial;
     margin-bottom: 10px;
+    color: #1b1b1b;
     label {
-      color: initial;
+      color: inherit;
     }
   }
 
@@ -262,6 +326,59 @@ export default {
     a {
       text-decoration: underline;
     }
+  }
+}
+.multiselect {
+  width: auto !important;
+  min-height: auto;
+  position: relative;
+  &__select {
+    height: 18px;
+    width: 20px;
+    padding: 0;
+    transform: rotate(-90deg);
+  }
+  &__tags {
+    min-height: auto;
+    background: transparent;
+    border: none;
+    padding: 0px 30px 0px 5px;
+  }
+  &__single {
+    background: transparent;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.001em;
+    color: #a4a4a4;
+    padding: 0;
+    margin: 0;
+    min-height: auto;
+  }
+  &__content-wrapper {
+    min-width: 159px;
+    left: auto;
+    right: 0;
+    background: #ffffff;
+    box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    height: 170px;
+    border: none;
+  }
+  &__option {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.001em;
+    color: #a4a4a4;
+  }
+  .multiselect__option--selected.multiselect__option--highlight,
+  .multiselect__option--highlight {
+    background: #f7f7f7;
+    color: #212121;
+  }
+  .multiselect--active .multiselect__select {
+    transform: rotate(-90deg);
   }
 }
 </style>

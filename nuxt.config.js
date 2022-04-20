@@ -23,11 +23,13 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    'vue-multiselect/dist/vue-multiselect.min.css',
     '~/scss/reset.scss',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/vue-multiselect.js',
     '~/plugins/vue2-touch-events.js'
   ],
 
