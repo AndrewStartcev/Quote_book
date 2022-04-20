@@ -1,4 +1,8 @@
 export default {
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
+  },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
@@ -24,7 +28,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-
+    '~/plugins/vue2-touch-events.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -1,5 +1,5 @@
 <template>
-  <div class="main" :class="theme">
+  <div class="main" :class="theme" v-touch="swipeHandler">
     <div class="main-header">
       <button @click="onChangeTheme()" class="main-header__theme">
         <i class="fa-solid fa-moon"></i>
@@ -7,9 +7,35 @@
       <!-- /.main-header__theme -->
       <p class="main-header__name">Генератор цитат</p>
       <!-- /.main-header__name -->
-      <button class="main-header__settings">
-        <i class="fa-solid fa-gear"></i>
-      </button>
+      <div class="main-header__settings">
+        <button @click="onChangeSetting()" class="settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <transition
+          name="transition-show-menu-setting"
+          enter-active-class="animate__animated animate__flipInX"
+          leave-active-class="animate__animated animate__flipOutX"
+        >
+          <div v-if="showSettings" class="settings__menu">
+            <div class="settings__options">
+              <label for="#">Шрифты</label>
+              <span>Gabriela ></span>
+            </div>
+            <div class="settings__options">
+              <label for="#">Категория</label>
+              <span>Все ></span>
+            </div>
+            <div class="settings__authors">
+              <p>Сreared by <a href="#">Andrew Startcev</a></p>
+              <p>
+                Illustration by <a href="#">Rosina Gavrilash</a> from
+                <a href="#">Ouch!</a>
+              </p>
+            </div>
+            <!-- /.settings__authors -->
+          </div>
+        </transition>
+      </div>
       <!-- /.main-header__settings -->
     </div>
     <!-- /.main-header -->
@@ -50,11 +76,14 @@
 </template>
 
 <script>
+import 'animate.css'
+
 export default {
   name: 'indexApp',
   data() {
     return {
       theme: '',
+      showSettings: false,
     }
   },
   methods: {
@@ -65,6 +94,18 @@ export default {
       } else {
         this.theme = 'dark'
         localStorage.setItem('theme', 'dark')
+      }
+    },
+    onChangeSetting() {
+      if (this.showSettings) {
+        this.showSettings = false
+      } else {
+        this.showSettings = true
+      }
+    },
+    swipeHandler() {
+      if (this.showSettings) {
+        this.showSettings = false
       }
     },
   },
@@ -82,8 +123,6 @@ export default {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  max-width: 768px;
-  margin: 0 auto;
   color: #1b1b1b;
   background: #ffffff;
   &-header {
@@ -107,10 +146,18 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
   margin-bottom: 15px;
   &__theme,
   &__settings {
+    position: relative;
     font-size: 24px;
+    button {
+      color: inherit;
+      font-size: inherit;
+    }
   }
   &__name {
     margin: 0 10px;
@@ -128,6 +175,9 @@ export default {
   justify-content: center;
   align-self: center;
   text-align: center;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
   &__images {
     margin: 0 8px 30px;
   }
@@ -148,6 +198,9 @@ export default {
   }
 }
 .main-footer {
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
   margin-top: 15px;
   display: flex;
   justify-content: space-between;
@@ -171,6 +224,44 @@ export default {
     border-radius: 100%;
     background: #202565;
     color: #ffffff;
+  }
+}
+.settings {
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 15px);
+    padding: 14px 12px;
+    min-width: 260px;
+    background: #ffffff;
+    box-shadow: 0px 0px 22px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+
+  &__options {
+    display: flex;
+    justify-content: space-between;
+    align-self: center;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: initial;
+    margin-bottom: 10px;
+    label {
+      color: initial;
+    }
+  }
+
+  &__authors {
+    margin-top: 18px;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 13px;
+    letter-spacing: 0.001em;
+    color: #7e7e7e;
+    a {
+      text-decoration: underline;
+    }
   }
 }
 </style>
