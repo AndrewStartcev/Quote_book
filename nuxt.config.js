@@ -35,10 +35,26 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
+    '@nuxtjs/auth-next'
   ],
 
-  axios: {
-    baseURL: '/',
+  axios: { baseURL: process.env.BASE_URL },
+
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: `${process.env.HOST}/api/auth/login`, method: "post", propertyName: "token", },
+          user: { url: '/api/auth/user', method: 'get', propertyName: "user" }
+        }
+      }
+    },
+    redirect: {
+      login: "/login",
+      logout: "/login",
+      callback: "/login",
+      home: "/admin",
+    },
   },
 
   pwa: {

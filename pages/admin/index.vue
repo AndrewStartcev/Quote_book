@@ -5,31 +5,81 @@
     </div>
     <!-- /.main-content__images -->
     <h2 class="main-content__title">Добавить цитату</h2>
+    <small class="main-content__text"
+      >Кол-во цитат в базе: {{ countQuote }} шт.</small
+    >
     <div class="main-content__form">
       <multiselect
-        v-model="currentCategory"
+        v-model="post.category"
         :options="category"
         :searchable="false"
         :show-labels="false"
-        :preselectFirst="true"
         :allowEmpty="false"
         class="admin-multiselect"
+        placeholder="Категория"
       ></multiselect>
-      <input type="text" placeholder="Автор" />
-      <textarea name="" id="" rows="5" placeholder="Цитата"></textarea>
-      <button>Добавить</button>
+      <input type="text" placeholder="Автор" v-model.trim="post.author" />
+      <textarea
+        rows="5"
+        placeholder="Цитата"
+        v-model.trim="post.quote"
+      ></textarea>
+      <button @click="newPost()">Добавить</button>
     </div>
-    <div class="main-content__back">Выйти</div>
+    <button @click="logout()" class="main-content__back">Выйти</button>
   </div>
 </template>
 
 <script>
 export default {
+  middleware: 'auth',
   data() {
     return {
-      category: ['Все', 'Вдохновляющие', 'Бизнес', 'Спортивные', 'Научные'],
+      category: ['Вдохновляющие', 'Бизнес', 'Спортивные', 'Научные'],
       currentCategory: [],
+      post: {
+        category: [],
+        author: '',
+        quote: '',
+      },
+      countQuote: 0,
     }
+  },
+  async asyncData({ $axios }) {
+    try {
+      let countQuote = await $axios.$get(`/api/quote/count/`)
+      return { countQuote }
+    } catch (e) {
+      return
+    }
+  },
+  methods: {
+    async newPost() {
+      // this.submitted = true
+      if (!true) {
+        // this.submitted = false
+      } else {
+        try {
+          await this.$axios
+            .$post(
+              `/api/quote/`,
+              { data: this.post },
+              {
+                headers: {
+                  authorization: this.$auth.$storage._state['_token.local'],
+                },
+              }
+            )
+            .then()
+          console.log('Добавил')
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    },
+    logout() {
+      this.$auth.logout()
+    },
   },
 }
 </script>
@@ -48,11 +98,11 @@ export default {
   &__images {
     margin: 0 8px 0px;
     img {
-      max-width: 100%;
+      max-width: 40%;
     }
   }
   &__title {
-    margin: 20px 0;
+    margin: 10px 0;
     font-weight: 400;
     font-size: 16px;
     line-height: 20px;
@@ -60,11 +110,17 @@ export default {
     letter-spacing: 0.001em;
     color: #1b1b1b;
   }
+  &__text {
+    margin-bottom: 10px;
+    font-size: 12px;
+    opacity: 0.8;
+  }
   &__form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 20px;
     input,
     textarea {
       max-width: 350px;
@@ -109,6 +165,16 @@ export default {
   max-width: 350px;
   width: 100%;
   .multiselect {
+    &__placeholder {
+      padding-bottom: 0;
+      margin-bottom: 0;
+      color: #757575;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 20px;
+      text-align: left;
+      letter-spacing: 0.001em;
+    }
     &__tags {
       padding: 12px;
       color: #28306d;
@@ -181,6 +247,9 @@ export default {
     background: #11163a;
   }
   .admin-multiselect .multiselect {
+    &__placeholder {
+      color: rgba(#fff, 0.5);
+    }
     &__tags {
       border: 2px solid #464b92;
       background: #11163a;
