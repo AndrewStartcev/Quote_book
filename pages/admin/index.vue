@@ -55,9 +55,7 @@ export default {
   },
   methods: {
     async newPost() {
-      // this.submitted = true
       if (!true) {
-        // this.submitted = false
       } else {
         try {
           await this.$axios
