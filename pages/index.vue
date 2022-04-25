@@ -99,6 +99,7 @@ export default {
   max-width: 768px;
   width: 100%;
   margin: 0 auto;
+  //
   .content {
     flex: 1 1 100%;
     height: 100%;
